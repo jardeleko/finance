@@ -1,18 +1,28 @@
 import Moviments from '../../components/Moviments'
-import Balance from '../../components/Balance'
 import Header from '../../components/Header'
 import { 
   StyleSheet, 
   Text, 
   View, 
-  FlatList 
+  FlatList,
+  RefreshControl
 } from 'react-native'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import publicRequest from '../../requestMethods'
-
+import { useNavigate } from 'react-router-native'
 
 export default function Compras() {
   const [datalist, setData] = useState({})
+  const [refreshing, setRefreshing] = useState(false);
+  const history = useNavigate()
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false)
+      history(0)
+    }, 1000);
+  }, []);
+
   useEffect(() => {
     const getData = async () => {
       publicRequest.get('/actions/stats').then((response) => {
@@ -32,7 +42,8 @@ export default function Compras() {
       })
     }
     getData()
-  },[])
+    if(refreshing) getData()
+  },[refreshing])
 
   return (
     <View style={styles.container}>
@@ -41,6 +52,7 @@ export default function Compras() {
       <FlatList 
         style={styles.list}
         data={datalist}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         keyExtractor={(item) => String(item._id)}
         showsVerticalScrollIndicator={false}
         renderItem={({item}) => <Moviments data={item} />}
@@ -62,6 +74,7 @@ const styles = StyleSheet.create({
     margin:14,
   }, 
   list: {
+    marginLeft: 20,
     marginStart: 14,
     marginEnd: 14,
   }

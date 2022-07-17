@@ -3,9 +3,11 @@ import {
     Text, 
     StyleSheet 
 } from 'react-native'
+import { MotiView } from 'moti'
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
 import publicRequest from '../../requestMethods'
+
 
 export default function Balance() {
     const [saldo, getSaldo] = useState('')
@@ -54,13 +56,18 @@ export default function Balance() {
         getValues()
     },[])
     return (
-        <View style={styles.container}>
+        <MotiView  
+            style={styles.container}
+            from={{rotateX: '-100deg', opacity:0}}
+            animate={{rotateX: '0deg', opacity:1}}
+            transition={{type: 'timing', delay:1000, duration:600}}
+        >
 
             <View style={styles.item}>
                 <Text style={styles.itemTitle}>Saldo <AntDesign name='rocket1' size={23} color={'coral'}/></Text>
                 <View style={styles.content}>
                     <Text style={styles.currencySymbol}>R$</Text>
-                    <Text style={styles.balance}>{saldo}</Text>
+                    <Text style={styles.balance}>{String(saldo).replace('.', ',')}</Text>
                 </View>
             </View>
 
@@ -68,11 +75,11 @@ export default function Balance() {
                 <Text style={styles.itemTitle}>Gastos <AntDesign name='dislike1' size={23} color={'purple'}/></Text>
                 <View style={styles.content}>
                     <Text style={styles.currencySymbol}>R$</Text>
-                    <Text style={styles.expenses}>{gastos}</Text>
+                    <Text style={styles.expenses}>{String(gastos).replace('.', ',')}</Text>
                 </View>
             </View>
             
-        </View>
+        </MotiView>
     )
 }
 const styles = StyleSheet.create({

@@ -29,7 +29,6 @@ export default function Create() {
         super:agree
       }
     ).then((res) => {
-      console.log(res.data)
       history('/')
     }).catch((err) => {
       console.log(err)

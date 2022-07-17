@@ -4,16 +4,29 @@ import {
   StyleSheet, 
   Text, 
   View, 
-  FlatList 
+  FlatList,
+  RefreshControl 
 } from 'react-native'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import publicRequest from '../../requestMethods'
+import { useNavigate } from 'react-router-native'
 
 export default function Payments() {
   const [datalist, setData] = useState({})
+  const [refreshing, setRefreshing] = useState(false);
+  const history = useNavigate()
+  
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false)
+      history(0)
+    }, 1000)
+  }, [])
+
   useEffect(() => {
     const getData = async () => {
-      publicRequest.get('/actions/stats').then((response) => {
+      await publicRequest.get('/actions/stats').then((response) => {
         response?.data.map((data) => {
           if(data.value) data.value = parseFloat(data.value?.$numberDecimal)
           return
@@ -30,7 +43,8 @@ export default function Payments() {
       })
     }
     getData()
-  },[])
+    if(refreshing) getData()
+  },[refreshing])
   return (
     <View style={styles.container}>
       <Header />
@@ -38,6 +52,7 @@ export default function Payments() {
       <FlatList 
         style={styles.list}
         data={datalist}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         keyExtractor={(item) => String(item._id)}
         showsVerticalScrollIndicator={false}
         renderItem={({item}) => <Moviments data={item} />}
@@ -59,6 +74,7 @@ const styles = StyleSheet.create({
     margin:14,
   }, 
   list: {
+    marginLeft: 20,
     marginStart: 14,
     marginEnd: 14,
   }

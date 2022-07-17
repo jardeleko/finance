@@ -4,13 +4,14 @@ import {
     StyleSheet,
     Text,
     StatusBar,
-    TouchableOpacity
+    TouchableOpacity,
 }
 from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { Link } from 'react-router-native'
 import publicRequest from '../../requestMethods'
-
+import { MotiText, MotiView } from 'moti'
+import { timing } from 'react-native-reanimated'
 
 const statusBarHeight = StatusBar.currentHeight ? StatusBar.currentHeight + 22 : 64;
 export default function Header() {
@@ -28,8 +29,32 @@ export default function Header() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.content}>
-                <Text style={styles.username}>{user.name}</Text>
+            <MotiView 
+                style={styles.content}
+                from={{
+                    translateY: -150,
+                    opacity: 0,
+                }}
+                animate={{
+                    translateY: 0,
+                    opacity: 1,
+                }}
+                transition={{
+                    type: "spring",
+                    duration: 800,
+                    delay:400
+                }}
+                >
+                <MotiText 
+                    style={styles.username}
+                    from={{translateX: -300}}
+                    animate={{translateX: 0}}
+                    transition={{
+                        type: "timing",
+                        duration: 800,
+                        delay:800
+                    }}
+                >   {user.name}</MotiText>
                     <View>
                     <TouchableOpacity activeOpacity={0.8} style={styles.buttonUser}>
                         <Link to={'/profile'}>
@@ -38,7 +63,7 @@ export default function Header() {
                     </TouchableOpacity>
                     </View>
 
-            </View>
+            </MotiView>
         </View>
     )
 }
@@ -58,6 +83,7 @@ const styles = StyleSheet.create({
         justifyContent:'space-between'
     },
     username: {
+        marginLeft: 8,
         fontSize: 18,
         color: '#fff',
         fontWeight:'bold',

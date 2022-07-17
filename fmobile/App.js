@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+// import { runOnJS } from 'react-native-reanimated' 
 import Home from './src/pages/Home'
 import Create from './src/pages/Createnew'
 import Compras from './src/pages/Compras'

@@ -9,7 +9,7 @@ import {
 import { Entypo } from '@expo/vector-icons'
 import format from 'dateformat'
 import publicRequest from '../../requestMethods'
-
+import { AnimatePresence, MotiText } from 'moti'
 
 export default function Moviments({data}) {
     const [showValue, setShowValue] = useState(false) 
@@ -25,8 +25,7 @@ export default function Moviments({data}) {
             style: "cancel"
             },
             { text: "OK", onPress: async () => {
-                await publicRequest.delete(`/actions/${event._id}`).then((res) => {
-                    console.log(res.data)
+                await publicRequest.delete(`/actions/${event._id}`).then(() => {
                 }).catch((err) => {
                     console.log(err)
                 })
@@ -42,15 +41,21 @@ export default function Moviments({data}) {
             <Text style={styles.label}>{data.transaction}</Text>
             <TouchableOpacity onPress={() => setShowValue(!showValue)}>
                 {showValue ? (
-                <Text 
-                    style={data.type === true ? styles.value : styles.expenses}>
-                        
-                    {data.type === true ? `R$ ${data.value}` : `R$ -${data.value}` }
-                </Text>
+                <AnimatePresence exitBeforeEnter>
+                    <MotiText 
+                        style={data.type === true ? styles.value : styles.expenses}
+                        from={{translateX:100}}
+                        animate={{translateX:0}}
+                        transition={{type:"timing", duration:500}}
+                    >
+                            
+                        {data.type === true ? `R$ ${data.value}` : `R$ -${data.value}` }
+                    </MotiText>
+                </AnimatePresence>
                 ) : (
-                    
-                    <Text style={styles.skeleton}>Display <Entypo name="eye" size={16} color="#343434" /></Text>
-                    
+                <AnimatePresence exitBeforeEnter>        
+                    <Text style={styles.skeleton}> Display <Entypo name="eye" size={16} color="#343434" /></Text>
+                </AnimatePresence>    
                 )}
             </TouchableOpacity>
         </View>
