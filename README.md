@@ -1,7 +1,7 @@
 # finance
 AppFinance React-Native
 
-* Steps: 
+#Steps:# 
 * Create pages (+4)
 * CRUD (up mongodb Cloud Atlas)
 * Include api services 
